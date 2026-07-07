@@ -10,6 +10,8 @@
 
 #include "msp.h"
 
+#include "UART.h"
+
 
 /**
  * main.c
