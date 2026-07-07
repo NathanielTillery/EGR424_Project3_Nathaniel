@@ -1,5 +1,7 @@
 // ===== Include appropriate header files =====
 
+#include "Threads.h"
+
 // These are the user-space threads. Note that they are completely oblivious
 // to the technical concerns of the scheduler. The only interface to the
 // scheduler is the single function yield() 
