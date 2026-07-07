@@ -1,12 +1,10 @@
 // ===== Include all the appropriate HEADER FILES =====
 
-
+#include "UART.h"
 
 
 // ===== This function configures UART0 =====
-void UART0_Init(void)
-{
-
+void UART0_Init(void){
     EUSCI_A0->CTLW0 = 0x0001;       // Put in RESET mode for config
 	EUSCI_A0->MCTLW &= ~0x0001;     // Disable oversampling
 	EUSCI_A0->BRW = 312;			// 3 MHz / 9600 = 312 (BAUD RATE)
@@ -19,35 +17,32 @@ void UART0_Init(void)
 
 
 // ===== This function sends a character to UART terminal =====
-int UART_Send(char a)
-{
-								// Wait for transmit buffer empty
-								// Send a character
+int UART_Send(char a){
+	while((EUSCI_A0->IFG & 0x02) == 0);         // Wait for transmit buffer empty
+	EUSCI_A0->TXBUF = a;					    // Send a character
 
-
-								// Return the character sent
+	return (int)a;							    // Return the character sent
 }
 
 
 // ===== This function transmits a string =====
-int UART_MSend(char *a)
-{
-		  
-								// Loop until all the characters sent
-									// Wait for transmit buffer empty
-									// Send a character
-  }
+int UART_MSend(char *a){
+    unsigned int len = strlen(a);
 
-								// Return number of characters sent
+	while(*a != '\0'){                          // Loop until all the characters sent
+        while(!(EUSCI_A0 -> IFG & 0x02));       // Wait for transmit buffer empty
+        EUSCI_A0 -> TXBUF = *a++;               // Send a character
+	}
+
+	return len;							        // Return number of characters sent
 }
 
 
 // ===== This function receives a character =====
-char UART_Receive(void)
-{
-	
-								// Wait for receive buffer full
-								// Receive a character
-
-								// Return the character received
+char UART_Receive(void){
+    while((EUSCI_A0->IFG & 0x01) == 0);         // Wait for receive buffer full
+    return((char)(EUSCI_A0->RXBUF));            // Receive and return a character
 }
+
+
+
