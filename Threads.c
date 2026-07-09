@@ -15,6 +15,9 @@
 /* Bit-Banding in Lecture 7 EGR424 Lecture Slides & notes 7 part 1 and 2*/
 #define LED_GREEN (*((volatile unsigned char *) 0x42098064))
 
+extern volatile int threadlock = 0;
+static volatile int count = 0;
+
 // ===== Thread 0 =====
 // ===== Responsible for toggling on-board GREEN RGB LED infinitely ====
 // ===== Use BIT-BANDING approach to reference the LED =====
