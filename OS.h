@@ -7,7 +7,14 @@
 
 #include "msp.h"
 
-						// Function protypes and variable declarations
+/* Function protypes */
+void OS_Init(void);
+void SetInitialStack(int i);
+int OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void));
+void OS_Launch(uint32_t theTimeSlice);
+
+
+/* variable declarations */
 
 
 #endif

@@ -24,35 +24,33 @@ int32_t Stacks[NUMTHREADS][STACKSIZE];	// 2-dimensional arry implemented as STAC
 // ===== OS_Init =====
 // Initialize operating system, disable interrupts until OS_Launch
 // Initialize OS controlled I/O: SysTick, 3 MHz crystal
-void OS_Init(void)
-{
-  OS_DisableInterrupts();
-								// Disable SysTick during setup (register approach)
-								// Any write to current clears it (register approach)
-  SCB -> SHP[1] = (SCB -> SHP[1] & 0x00FFFFFF)|0xE0000000;          // Set priority 7 so that it allows threads to run
+void OS_Init(void){
+    OS_DisableInterrupts();
+    SysTick -> CTRL = 0;    	// Disable SysTick during setup (register approach)
+    SysTick -> VAL = 0; 		// Any write to current clears it (register approach)
+    SCB -> SHP[1] = (SCB -> SHP[1] & 0x00FFFFFF)|0xE0000000;          // Set priority 7 so that it allows threads to run
 }
 
 
 // ===== Sets default values in STACK ======
 // Inputs: i is the threadnumber
-void SetInitialStack(int i)
-{
+void SetInitialStack(int i){
   tcbs[i].sp = &Stacks[i][STACKSIZE-16]; // thread stack pointer
-  Stacks[i][STACKSIZE-1] = 			 ;   // XPSR (store appropriate initial value) 	-- Saved by Exception
-  Stacks[i][STACKSIZE-3] = 			 ;   // R14 (store appropriate initial value)
-  Stacks[i][STACKSIZE-4] = 			 ;   // R12 (store appropriate initial value)
-  Stacks[i][STACKSIZE-5] = 			 ;   // R3 (store appropriate initial value)
-  Stacks[i][STACKSIZE-6] = 			 ;   // R2 (store appropriate initial value)
-  Stacks[i][STACKSIZE-7] = 			 ;   // R1 (store appropriate initial value)
-  Stacks[i][STACKSIZE-8] = 			 ;   // R0 (store appropriate initial value)	-- Saved by Exception
-  Stacks[i][STACKSIZE-9] = 			 ;   // R11 (store appropriate initial value)	-- Saved by you
-  Stacks[i][STACKSIZE-10] = 		 ;   // R10 (store appropriate initial value)
-  Stacks[i][STACKSIZE-11] = 		 ;   // R9 (store appropriate initial value)
-  Stacks[i][STACKSIZE-12] = 		 ;   // R8 (store appropriate initial value)
-  Stacks[i][STACKSIZE-13] = 		 ;   // R7 (store appropriate initial value)
-  Stacks[i][STACKSIZE-14] = 		 ;   // R6 (store appropriate initial value)
-  Stacks[i][STACKSIZE-15] = 		 ;   // R5 (store appropriate initial value)
-  Stacks[i][STACKSIZE-16] = 		 ;   // R4 (store appropriate initial value)	-- Saved by you
+  Stacks[i][STACKSIZE-1] = 0x0D0D0D0D;   // XPSR (store appropriate initial value) 	-- Saved by Exception
+  Stacks[i][STACKSIZE-3] = 0x0E0E0E0E;   // R14 (store appropriate initial value)
+  Stacks[i][STACKSIZE-4] = 0x0C0C0C0C;   // R12 (store appropriate initial value)
+  Stacks[i][STACKSIZE-5] = 0x03030303;   // R3 (store appropriate initial value)
+  Stacks[i][STACKSIZE-6] = 0x02020202;   // R2 (store appropriate initial value)
+  Stacks[i][STACKSIZE-7] = 0x01010101;   // R1 (store appropriate initial value)
+  Stacks[i][STACKSIZE-8] = 0x00000000;   // R0 (store appropriate initial value)	-- Saved by Exception
+  Stacks[i][STACKSIZE-9] = 0X0B0B0B0B;   // R11 (store appropriate initial value)	-- Saved by you
+  Stacks[i][STACKSIZE-10] = 0x0A0A0A0A;   // R10 (store appropriate initial value)
+  Stacks[i][STACKSIZE-11] = 0x09090909;   // R9 (store appropriate initial value)
+  Stacks[i][STACKSIZE-12] = 0x08080808;   // R8 (store appropriate initial value)
+  Stacks[i][STACKSIZE-13] = 0x07070707;   // R7 (store appropriate initial value)
+  Stacks[i][STACKSIZE-14] = 0x06060606;   // R6 (store appropriate initial value)
+  Stacks[i][STACKSIZE-15] = 0x05050505;   // R5 (store appropriate initial value)
+  Stacks[i][STACKSIZE-16] = 0x04040404;   // R4 (store appropriate initial value)	-- Saved by you
 }
 
 
@@ -60,8 +58,7 @@ void SetInitialStack(int i)
 // Add three foreground threads to the scheduler in a Round-Robin fashion
 // Inputs: three pointers to a void/void foreground tasks
 // Outputs: 1 if successful, 0 if this thread can not be added
-int OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void))
-{
+int OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void)){
   int32_t status;
 
 									// Function call to start the critical section
@@ -89,11 +86,10 @@ int OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(voi
 // Start the scheduler, Enable interrupts
 // Inputs: number of 333.33ms clock cycles that corresponds to 2 ms
 //         (maximum of 24 bits)
-void OS_Launch(uint32_t theTimeSlice)
-{
-								 // Load the reload value for Systick Timer
-								 // Enable the Timer, Use core clock and arm interrupt
-  StartOS();                     // start on the first task
+void OS_Launch(uint32_t theTimeSlice){
+    SysTick -> LOAD = (theTimeSlice - 1);    // Load the reload value for Systick Timer
+	SysTick -> CTRL = 0x00000007;			 // Enable the Timer, Use core clock and arm interrupt
+    StartOS();                     // start on the first task
 }
 
 
