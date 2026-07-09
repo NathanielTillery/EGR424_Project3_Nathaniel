@@ -36,7 +36,7 @@ void OS_Init(void){
 // Inputs: i is the threadnumber
 void SetInitialStack(int i){
   tcbs[i].sp = &Stacks[i][STACKSIZE-16]; // thread stack pointer
-  Stacks[i][STACKSIZE-1] = 0x0D0D0D0D;   // XPSR (store appropriate initial value) 	-- Saved by Exception
+  Stacks[i][STACKSIZE-1] = 0x010D0D0D;   // XPSR (store appropriate initial value) 	-- Saved by Exception
   Stacks[i][STACKSIZE-3] = 0x0E0E0E0E;   // R14 (store appropriate initial value)
   Stacks[i][STACKSIZE-4] = 0x0C0C0C0C;   // R12 (store appropriate initial value)
   Stacks[i][STACKSIZE-5] = 0x03030303;   // R3 (store appropriate initial value)
@@ -97,8 +97,7 @@ void OS_Launch(uint32_t theTimeSlice){
 // Make a copy of previous I bit, disable interrupts
 // Outputs: previous I bit
 extern int32_t StartCritical(void) __attribute__((naked));
-int32_t StartCritical(void)
-{
+int32_t StartCritical(void){
 								// Save old status
 								// Disable interrupt mechanism in assembly
 								// Return to the calling function  
@@ -109,8 +108,7 @@ int32_t StartCritical(void)
 // Using the copy of previous I bit, restore I bit to previous value
 // Inputs:  previous I bit
 extern void EndCritical(int32_t primask) __attribute__((naked));
-void EndCritical(int32_t primask)
-{
+void EndCritical(int32_t primask){
 								// Enable interrupt mechanism in assembly
 								// Return to the calling function  
 }
@@ -118,7 +116,6 @@ void EndCritical(int32_t primask)
 
 // ====== This function (written in assembly) switches to handler mode. (privileged access) =======
 extern void yield(void) __attribute__((naked));
-void yield(void)
-{
+void yield(void){
 						// Gain privileged access
 }

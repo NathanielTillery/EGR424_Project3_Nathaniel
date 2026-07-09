@@ -94,8 +94,8 @@ int main(void)
     UART0_Init();                                   // Initialize UART0 peripheral
     GPIO_Init();                                    // Initialize GPIO peripheral
 
-                                                    // Add Threads to the list
-                                                    // Launch OS
+    OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void));                      // Add Threads to the list
+    void OS_Launch(TIMESLICE);                 // Launch OS
 
   return 0;            // This never executes
 
