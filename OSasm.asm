@@ -16,26 +16,16 @@
         .global  SysTick_Handler
 
 
-; ARM Cortex m3-v7 page B3-33 (B3.4 Nested Vectored Interrupt Controller)
-; CLRENA disables one or more interrupts within group of 32; 1 disables interrupt 0 has no effect
-; CLRENA addresses 0xE00E180-E1FC
-; SETENA enables the interrupts; 1 enables and 0 has no effect
-; SETENA addresses 0x00E100-E17C
+; ARM Cortex m3-v7 B4.4.1
 OS_DisableInterrupts:  .asmfunc			; Complete this
-	MOV R0, #0xE180		; Load CLRENA address lower 16 bits into R0
-	MOVT R1, #0xE000	; Load CLRENA top 16 bits into the top of R0
-	MVN R1, #0			; Move NOT 0 into R1, so R1 becomes all 1s
-	STR R1, [R0]		; Load the 32 1s into the CLRENA addresses to disable all of the interrupts
+	CPSID i		; Change Processor Sate Instruction Interrupt Disable i
 	BX LR
 
        .endasmfunc
 
 
 OS_EnableInterrupts:  .asmfunc			; Complete this
-	MOV R0, #0xE17C		; Load SETENA address lower 16 bits into R0
-	MOVT R1, #0xE100	; Load SETENA top 16 bits into the top of R0
-	MVN R1, #0			; Move NOT 0 into R1, so R1 becomes all 1s
-	STR R1, [R0]		; Load the 32 1s into the SETENA addresses to disable all of the interrupts
+	CPSIE i		; Change Processor Sate Instruction Interrupt Enable i
 	BX LR
 		
        .endasmfunc

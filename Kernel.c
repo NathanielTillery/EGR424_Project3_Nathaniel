@@ -89,7 +89,7 @@ void Lock_Release(unsigned *lock)
 int main(void)
 {
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
-    //Lock_Init();							        // Initialize the global thread lock
+    Lock_Init(&threadlock);							// Initialize the global thread lock
     OS_Init();                                      // Initialize OS
     UART0_Init();                                   // Initialize UART0 peripheral
     GPIO_Init();                                    // Initialize GPIO peripheral
