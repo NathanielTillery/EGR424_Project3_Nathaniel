@@ -2,7 +2,7 @@
 
 // ===== Function prototypes of functions written in OSasm.asm =====
 
-
+#include "OS.h"
 
 
 #define NUMTHREADS  3             // Maximum number of threads

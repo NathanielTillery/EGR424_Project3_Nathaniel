@@ -5,6 +5,7 @@
 #define TIME_1MS  
 #define TIME_2MS  						// This is what you should pass as the Timeslice value
 
+#include "msp.h"
 
 						// Function protypes and variable declarations
 
