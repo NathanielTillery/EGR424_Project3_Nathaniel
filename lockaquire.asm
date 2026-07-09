@@ -25,7 +25,8 @@
     .type lock_acquire, function
     .global lock_acquire
 
-lock_acquire:
+;lock_acquire:
+Lock_Acquire:
     MOV     r1, #0
 
     LDREX   r2, [r0]        ; R2 <-- lock value
