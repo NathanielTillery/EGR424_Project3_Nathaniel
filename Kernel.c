@@ -50,8 +50,16 @@ int fputs(const char *_ptr, register FILE *_fp){
 
 
 // ====== GPIO_Init() =======
-void GPIO_Init(void)
-{
+void GPIO_Init(void){
+    //Set up RGB LED output (P2.0, P2.1, P2.2 as output)
+    P2->SEL0 = 0;
+    P2->SEL1 = 0;
+
+    P2->DIR &= ~(BIT3 | BIT4 | BIT5 | BIT6 | BIT7); //Clear all bits we're not using to input
+    P2->DIR = (BIT0 | BIT1 | BIT2); //Set the RGB bits as output
+
+    //Turn off RGB to start
+    P2->OUT &= ~(BIT0 | BIT1 | BIT2);
 				// Initialize GPIO periperals needed in this project
   
 }
