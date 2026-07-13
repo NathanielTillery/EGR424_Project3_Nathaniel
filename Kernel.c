@@ -24,6 +24,7 @@
 // ===== This is the kernel that will setup everything and run the scheduler ======
 
 
+// number of 333.33ms clock cycles that corresponds to 2 ms
 #define TIMESLICE    		            // Thread context switch time in system time units
 
 unsigned threadlock;                    // Variable Lock
@@ -67,35 +68,31 @@ void GPIO_Init(void){
 
 
 // ======== Function to initialize LOCK (you need to modify) =============
-void Lock_Init(unsigned *lock)
-{
-    ;
+void Lock_Init(unsigned *lock){
+    *lock = 1;
 }
 
 // ======= Function to acquire the lock to be written in LockAcquire.asm ======
-unsigned Lock_Acquire(unsigned *lock)
-{
-  return 1; // always succeeds
-}
+//unsigned Lock_Acquire(unsigned *lock){
+//  return 1; // always succeeds
+//}
 
 // ======== Function to release LOCK (you need to modify) ===========
-void Lock_Release(unsigned *lock)
-{
-	;
-}
+//void Lock_Release(unsigned *lock){
+//	;
+//}
 
 
 // ======= MAIN =========
-int main(void)
-{
+int main(void){
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
     Lock_Init(&threadlock);							// Initialize the global thread lock
     OS_Init();                                      // Initialize OS
     UART0_Init();                                   // Initialize UART0 peripheral
     GPIO_Init();                                    // Initialize GPIO peripheral
 
-    OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void));                      // Add Threads to the list
-    void OS_Launch(TIMESLICE);                 // Launch OS
+    //OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void));                      // Add Threads to the list
+    //OS_Launch(TIMESLICE);                 // Launch OS
 
   return 0;            // This never executes
 
@@ -104,67 +101,3 @@ int main(void)
 
 
 
-
-
-
-//
-//
-////Called by C library console / file input
-////This function echoes the character received
-//int fgetc(FILE *f){
-//
-//    int input = 0;
-//
-//    /* Push back scanf() read issue */
-//    if(pushed_back_char != -1){
-//        input = pushed_back_char;
-//        pushed_back_char = -1;
-//        return input;
-//    }
-//
-//
-//    //Read the character from the console then echo the input
-//    input = UART_Receive();
-//
-//    /* Convert the 'enter' key press from the terminal into a newline
-//     * for scanf(); echo the newline so that the terminal display moves
-//     * to the next line
-//     */
-//    if (input == '\r'){
-//        UART_Send('\r');
-//        UART_Send('\n');
-//        return '\n';
-//    }
-//
-//    UART_Send((char)input); // Echo the character
-//
-//    return input;   //Return the character received
-//}
-//
-///* ungetc() is modeled off of getc and the rest of the functions we've made in this exercise.
-// * Its function is to modify a global flag variable called pushed_back_char, which tells if
-// * the char has been messed up by our unique implementation of this scanf stuff.
-// */
-//int ungetc(int c, FILE *f)
-//{
-//    (void)f;
-//
-//    /* If end of file, nothing needed to push back */
-//    if(c == EOF)
-//    {
-//        return EOF;
-//    }
-//
-//    /* If we don't have exactly one character waiting to be put back into its place, we return
-//     * with EOF. If there are two characters for some reason that need to be put back, this
-//     * fix will break.
-//     */
-//    if(pushed_back_char != -1)
-//    {
-//        return EOF;
-//    }
-//
-//    pushed_back_char = c;   // Save the character so fgetc() can return it on the next read
-//
-//    return c;              // Return to show that the pushback succeeded
-//}

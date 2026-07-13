@@ -14,6 +14,21 @@ int OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(voi
 void OS_Launch(uint32_t theTimeSlice);
 
 
+/* Functions implemented in OSasm.asm */
+extern void OS_DisableInterrupts(void);
+extern void StartOS(void);
+
+/* Functions defined later in OS.c */
+extern int32_t StartCritical(void) __attribute__((naked));
+extern void EndCritical(int32_t primask) __attribute__((naked));
+
+/* Private helper functions */
+static void unPrivToPriv(void);
+static void privToUnpriv(void);
+
+/* Called from SVC_Handler assembly */
+void handleSVC(int code);
+
 /* variable declarations */
 
 

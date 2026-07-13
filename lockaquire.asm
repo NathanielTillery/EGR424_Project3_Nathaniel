@@ -1,8 +1,7 @@
-    .syntax unified
     .text
     .align 2
     .thumb
-    .thumb_func
+
 
 
  ; Returns 0 if unsuccessful, 1 if successful in acquiring lock
@@ -22,11 +21,11 @@
  ;     }                           // stored in *lockaddr
  ; }
 
-    .type lock_acquire, function
-    .global lock_acquire
+    .global Lock_Acquire
+    .thumbfunc Lock_Acquire
 
-;lock_acquire:
-Lock_Acquire:
+
+Lock_Acquire:	.asmfunc
     MOV     r1, #0
 
     LDREX   r2, [r0]        ; R2 <-- lock value
@@ -35,14 +34,15 @@ Lock_Acquire:
     STREXNE r2, r1, [r0]    ; If not, try to claim it by writing 0
                             ; R2 <-- 0 if successful, 1 if failure
     CMPNE   r2, #1          ; and check success
-    BEQ     1f              ; branch taken if lock was already free
-                            ; (so the previous two XXXXXX instructions
-                            ; did not execute) or STREXNE returned 1.
+    BEQ     LockFree        ; branch taken if lock was already free (so the previous two XXXXXX
+    						; instructions did not execute) or STREXNE returned 1.
 
     MOV     r0, #1          ; Indicate success
     BX      LR
 
-1:                          ; Local label. branch here from above with destination '1f'
+LockFree                    ; Local label. branch here from above with destination '1f'
     CLREX                   ; We did not get the lock. Clear exclusive access.
     MOV     r0, #0          ; Indicate failure
     BX      LR
+
+    .endasmfunc
