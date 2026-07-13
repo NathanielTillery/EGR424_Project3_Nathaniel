@@ -121,7 +121,7 @@ void EndCritical(int32_t primask){
 // ====== This function (written in assembly) switches to handler mode. (privileged access) =======
 extern void yield(void) __attribute__((naked));
 void yield(void){
-    asm volatile(" SVC 10");    // Call Service Call 10; requests privileged access
+    asm volatile(" SVC #10");    // Call Service Call 10; requests privileged access
 }
 
 // ------------- SVC HANDLER -----------------------
@@ -163,7 +163,7 @@ static void privToUnpriv(void){
     asm volatile(" ORR R0, R0, #1");
     asm volatile(" MSR CONTROL, R0");
     asm volatile(" ISB");
-    asm volatile(" B privToUnprivPrint");
+    asm volatile(" BX LR");
 }
 
 static void unPrivToPriv(void){
@@ -171,5 +171,5 @@ static void unPrivToPriv(void){
     asm volatile(" AND R0, R0, #0");
     asm volatile(" MSR CONTROL, R0");
     asm volatile(" ISB");
-    asm volatile(" B unprivToPrivPrint");
+    asm volatile(" BX LR");
 }
