@@ -25,10 +25,10 @@
 
 
 // number of 333.33ms clock cycles that corresponds to 2 ms
-#define TIMESLICE    		            // Thread context switch time in system time units
+#define TIMESLICE 6000      // Thread context switch time in system time units
 
 unsigned threadlock;                    // Variable Lock
-//static int pushed_back_char = -1;       // Decide if we need to push back the character in the case that scanf() destroyed
+
 
 // Code below is the interface to the C standard I/O library
 // All the I/O are directed to the console which is UART0
@@ -91,8 +91,8 @@ int main(void){
     UART0_Init();                                   // Initialize UART0 peripheral
     GPIO_Init();                                    // Initialize GPIO peripheral
 
-    //OS_AddThreads(void(*Thread0)(void), void(*Thread1)(void), void(*Thread2)(void));                      // Add Threads to the list
-    //OS_Launch(TIMESLICE);                 // Launch OS
+    OS_AddThreads(Thread0, Thread1, Thread2);                      // Add Threads to the list
+    OS_Launch(TIMESLICE);                 // Launch OS
 
   return 0;            // This never executes
 
