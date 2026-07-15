@@ -15,7 +15,7 @@
 /* Bit-Banding in Lecture 7 EGR424 Lecture Slides & notes 7 part 1 and 2*/
 #define LED_GREEN (*((volatile unsigned char *) 0x42098064))
 
-extern volatile unsigned int threadlock;
+extern unsigned threadlock;
 static volatile int count = 0;
 
 // ===== Thread 0 =====
@@ -25,6 +25,9 @@ static volatile int count = 0;
 void Thread0(void){
   while(1){
       LED_GREEN ^= 0x01;    //Toggle on-board LED's Green light
+      /* FIXME: Debugging delay and printf */
+//      __delay_cycles(500000);
+//      printf("\n\r LED Toggled!");
   }
 }
 

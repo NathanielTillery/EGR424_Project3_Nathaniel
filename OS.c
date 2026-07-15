@@ -9,8 +9,7 @@
 #define STACKSIZE   100           // Number of 32-bit words in stack (You will have to keep increasing intelligently if code does not work)
 
 // ===== Structure to store state of thread =====
-struct tcb
-{
+struct tcb{
   int32_t *sp;                      // Pointer to stack (valid for threads not running)
   struct tcb *next;                 // Linked-list pointer
 };
@@ -40,7 +39,7 @@ void OS_Init(void){
 // Inputs: i is the thread number
 void SetInitialStack(int i){
   tcbs[i].sp = &Stacks[i][STACKSIZE-16]; // thread stack pointer
-  Stacks[i][STACKSIZE-1] = 0x010D0D0D;   // XPSR (store appropriate initial value) 	-- Saved by Exception
+  Stacks[i][STACKSIZE-1] = 0x01000000;   // XPSR (store appropriate initial value) 	-- Saved by Exception
   Stacks[i][STACKSIZE-3] = 0x0E0E0E0E;   // R14 (store appropriate initial value)
   Stacks[i][STACKSIZE-4] = 0x0C0C0C0C;   // R12 (store appropriate initial value)
   Stacks[i][STACKSIZE-5] = 0x03030303;   // R3 (store appropriate initial value)
@@ -121,55 +120,56 @@ void EndCritical(int32_t primask){
 // ====== This function (written in assembly) switches to handler mode. (privileged access) =======
 extern void yield(void) __attribute__((naked));
 void yield(void){
-    asm volatile(" SVC #10");    // Call Service Call 10; requests privileged access
+    //asm volatile(" SVC #10");    // Call Service Call 10; requests privileged access
+
 }
 
-// ------------- SVC HANDLER -----------------------
-extern void SVC_Handler(void) __attribute__((naked));
-void SVC_Handler(void){
-    asm volatile(" TST LR, #0x4");          // Test EXC_RETURN number in LR bit 2
-    asm volatile(" ITE EQ");                // if zero (equal) then
-    asm volatile(" MRSEQ R0, MSP");         // Main stack was used, put MSP in R0");
-    asm volatile(" MRSNE R0, PSP");         // Else, Process stack was used, put PSP in R0");
-    asm volatile(" LDR R1,[R0,#24]");       // Get stacked in PC from stack");
-    asm volatile(" LDRB R0,[R1,#-2]");      // Get the immediate data from the instruction");
-    asm volatile(" B handleSVC");           //branch to handleSVC() label
-}
-
-// You must write an exception handler for the SVC exception
-// that calls handleSVC() with the 8-bit integer encoded in
-// the SVC instruction.
-void handleSVC(int code)
-{
-  switch (code & 0xFF) {
-  // ------------------------------------
-    case 10:
-    {
-      unPrivToPriv(); // Switch to Privileged Handler mode
-      break;
-    }
-
-  // ------------------------------------
-    default:
-      // Let's not use printf here. We can throw an error or something si queremos no todavía sé
-      break;
-  }
-}
-
-
- /* Privilege Helper Functions */
-static void privToUnpriv(void){
-    asm volatile(" MRS R0, CONTROL");
-    asm volatile(" ORR R0, R0, #1");
-    asm volatile(" MSR CONTROL, R0");
-    asm volatile(" ISB");
-    asm volatile(" BX LR");
-}
-
-static void unPrivToPriv(void){
-    asm volatile(" MRS R0, CONTROL");
-    asm volatile(" AND R0, R0, #0");
-    asm volatile(" MSR CONTROL, R0");
-    asm volatile(" ISB");
-    asm volatile(" BX LR");
-}
+//// ------------- SVC HANDLER -----------------------
+//extern void SVC_Handler(void) __attribute__((naked));
+//void SVC_Handler(void){
+//    asm volatile(" TST LR, #0x4");          // Test EXC_RETURN number in LR bit 2
+//    asm volatile(" ITE EQ");                // if zero (equal) then
+//    asm volatile(" MRSEQ R0, MSP");         // Main stack was used, put MSP in R0");
+//    asm volatile(" MRSNE R0, PSP");         // Else, Process stack was used, put PSP in R0");
+//    asm volatile(" LDR R1,[R0,#24]");       // Get stacked in PC from stack");
+//    asm volatile(" LDRB R0,[R1,#-2]");      // Get the immediate data from the instruction");
+//    asm volatile(" B handleSVC");           //branch to handleSVC() label
+//}
+//
+//// You must write an exception handler for the SVC exception
+//// that calls handleSVC() with the 8-bit integer encoded in
+//// the SVC instruction.
+//void handleSVC(int code)
+//{
+//  switch (code & 0xFF) {
+//  // ------------------------------------
+//    case 10:
+//    {
+//      unPrivToPriv(); // Switch to Privileged Handler mode
+//      break;
+//    }
+//
+//  // ------------------------------------
+//    default:
+//      // Let's not use printf here. We can throw an error or something si queremos no todavía sé
+//      break;
+//  }
+//}
+//
+//
+// /* Privilege Helper Functions */
+//static void privToUnpriv(void){
+//    asm volatile(" MRS R0, CONTROL");
+//    asm volatile(" ORR R0, R0, #1");
+//    asm volatile(" MSR CONTROL, R0");
+//    asm volatile(" ISB");
+//    asm volatile(" BX LR");
+//}
+//
+//static void unPrivToPriv(void){
+//    asm volatile(" MRS R0, CONTROL");
+//    asm volatile(" AND R0, R0, #0");
+//    asm volatile(" MSR CONTROL, R0");
+//    asm volatile(" ISB");
+//    asm volatile(" BX LR");
+//}

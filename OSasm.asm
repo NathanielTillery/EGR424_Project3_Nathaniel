@@ -34,16 +34,16 @@ OS_EnableInterrupts:  .asmfunc			; Complete this
 RunPtAddr .field RunPt,32		; Tells us that RunPt is a 32 bit value
 
 SysTick_Handler:  .asmfunc		; 1) Handler automatically saves R0-R3,R12,LR,PC,PSR on stack upon entry
-	b OS_DisableInterrupts	    ; 2) Disable interrupt mechanism to prevent interrupts from happening during switch
+	CPSID i					    ; 2) Disable interrupt mechanism to prevent interrupts from happening during switch
 	PUSH {R4-R11}			    ; 3) Save remaining regs r4-11 on stack (of current thread)
 	LDR R0, RunPtAddr		    ; 4) Load R0 with the address of RunPt, current thread
 	LDR R1, [R0]			    ; 5) Load R1 with the value of RunPt
 	STR SP, [R1]			    ; 6) Save current SP into TCB structure
-	LDR R1, [R1, #0x32]			; 7) Load R1 with the value of RunPt->next
+	LDR R1, [R1, #0x4]			; 7) Load R1 with the value of RunPt->next
 	STR	R1, [R0]				; 8) Store it in RunPt (so it points to next thread)
 	LDR SP, [R1]				; 9) Load new thread SP; SP = RunPt->sp;
 	POP {R4-R11}			    ; 10) Restore regs r4-11 (next thread)
-	b OS_EnableInterrupts		; 11) Enable interrupt mechanism
+	CPSIE i						; 11) Enable interrupt mechanism
 	bx lr	   					; 12) Return to calling function (R0-R3,R12,LR,PC,PSR are automatically restored upon exit
     .endasmfunc
 

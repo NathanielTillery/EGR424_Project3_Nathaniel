@@ -1,6 +1,13 @@
 #ifndef THREADS_H_
 #define THREADS_H_
 
+#include "msp.h"
+#include "UART.h"
+//#include "Kernel.c"
+
+#include <stdio.h>
+#include <string.h>
+
 
 
 /* Function prototypes and variable declarations */

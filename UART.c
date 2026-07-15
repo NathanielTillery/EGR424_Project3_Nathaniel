@@ -2,6 +2,9 @@
 
 #include "UART.h"
 
+#include <stdio.h>
+#include <string.h>
+
 
 // ===== This function configures UART0 =====
 void UART0_Init(void){

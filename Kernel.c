@@ -11,13 +11,10 @@
 #include "msp.h"
 #include <string.h>
 #include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-
 
 #include "UART.h"
-#include "Threads.h"
 #include "OS.h"
+#include "Threads.h"
 
 
 
@@ -91,7 +88,7 @@ int main(void){
     UART0_Init();                                   // Initialize UART0 peripheral
     GPIO_Init();                                    // Initialize GPIO peripheral
 
-    OS_AddThreads(Thread0, Thread1, Thread2);                      // Add Threads to the list
+    OS_AddThreads(&Thread0, &Thread1, &Thread2);                      // Add Threads to the list
     OS_Launch(TIMESLICE);                 // Launch OS
 
   return 0;            // This never executes
