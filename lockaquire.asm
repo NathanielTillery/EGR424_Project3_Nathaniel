@@ -24,7 +24,7 @@
 
     .global Lock_Acquire
     .thumbfunc Lock_Acquire
-	r6789
+
 
 Lock_Acquire:	.asmfunc
     MOV     r1, #0
