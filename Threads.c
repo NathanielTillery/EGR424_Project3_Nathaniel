@@ -1,6 +1,7 @@
 // ===== Include appropriate header files =====
 
 #include "Threads.h"
+#include "OS.h"
 
 // These are the user-space threads. Note that they are completely oblivious
 // to the technical concerns of the scheduler. The only interface to the
@@ -25,9 +26,6 @@ static volatile int count = 0;
 void Thread0(void){
   while(1){
       LED_GREEN ^= 0x01;    //Toggle on-board LED's Green light
-      /* FIXME: Debugging delay and printf */
-//      __delay_cycles(500000);
-//      printf("\n\r LED Toggled!");
   }
 }
 

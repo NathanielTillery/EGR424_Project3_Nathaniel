@@ -6,7 +6,8 @@
 
 
 #define NUMTHREADS  3             // Maximum number of threads
-#define STACKSIZE   100           // Number of 32-bit words in stack (You will have to keep increasing intelligently if code does not work)
+//#define STACKSIZE   100           // Number of 32-bit words in stack (You will have to keep increasing intelligently if code does not work)
+#define STACKSIZE 256
 
 // ===== Structure to store state of thread =====
 struct tcb{
@@ -31,7 +32,8 @@ void OS_Init(void){
     OS_DisableInterrupts();
     SysTick -> CTRL = 0;    	// Disable SysTick during setup (register approach)
     SysTick -> VAL = 0; 		// Any write to current clears it (register approach)
-    SCB -> SHP[1] = (SCB -> SHP[1] & 0x00FFFFFF)|0xE0000000;          // Set priority 7 so that it allows threads to run
+    //SCB->SHP[11] = 0xE0;          // Set priority 7 so that it allows threads to run
+    NVIC_SetPriority(SysTick_IRQn, 7);  // Set priority 7 so that it allows threads to run
 }
 
 
@@ -121,7 +123,7 @@ void EndCritical(int32_t primask){
 extern void yield(void) __attribute__((naked));
 void yield(void){
     asm volatile(" SVC #10");    // Call Service Call 10; requests privileged access
-    asm volatile(" bx lr");
+    asm volatile(" BX LR");
 
 }
 
@@ -135,7 +137,7 @@ void SVC_Handler(void){
     asm volatile(" LDR R1,[R0,#24]");       // Get stacked in PC from stack");
     asm volatile(" LDRB R0,[R1,#-2]");      // Get the immediate data from the instruction");
     asm volatile(" B handleSVC");           //branch to handleSVC() label
-    asm volatile(" bx lr");
+    asm volatile(" BX LR");
 }
 
 // You must write an exception handler for the SVC exception

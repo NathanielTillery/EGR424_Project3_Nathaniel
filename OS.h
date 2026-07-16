@@ -29,6 +29,8 @@ static void privToUnpriv(void);
 /* Called from SVC_Handler assembly */
 void handleSVC(int code);
 
+void yield(void);
+
 /* variable declarations */
 
 
