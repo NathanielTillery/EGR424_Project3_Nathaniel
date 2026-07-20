@@ -87,7 +87,7 @@ int main(void){
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
     Lock_Init(&threadlock);							// Initialize the global thread lock
     OS_Init();                                      // Initialize OS
-    TimerA_Init();                                   // Timer A will be used to measure context switch time
+    TimerA_init();                                   // Timer A will be used to measure context switch time
     UART0_Init();                                   // Initialize UART0 peripheral
     GPIO_Init();                                    // Initialize GPIO peripheral
 
