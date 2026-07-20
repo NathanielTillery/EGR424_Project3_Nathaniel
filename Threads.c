@@ -43,7 +43,7 @@ void Thread1(void){
     printf("\n\rEntered");
     yield();					// Give up control voluntarily (context switch "interrupt")
 
-    printf(" Thread 1 -- pass %d", count);
+    printf(" Thread 1 -- pass %d", count++);
 	Lock_Release(&threadlock);					// Release lock
    }
    yield();                		// Give up control voluntarily (context switch "interrupt")

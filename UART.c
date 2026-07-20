@@ -20,6 +20,16 @@ void UART0_Init(void){
 
 
 // ===== This function sends a character to UART terminal =====
+/* The UART transmit functions intentionally use polling to wait
+ * for the eUSCI transmit buffer. Complete messages are protected
+ * by the UART lock, which prevents multiple threads from
+ * interleaving their output. Although polling temporarily blocks
+ * the calling thread and uses processor time, interrupts remain enabled,
+ * allowing SysTick to preempt the thread and continue scheduling.
+ * This implementation was retained because it matches the UART
+ * approach used in class and is sufficient for the limited diagnostic
+ * messages used in this demonstration.
+ */
 int UART_Send(char a){
 	while((EUSCI_A0->IFG & 0x02) == 0);         // Wait for transmit buffer empty
 	EUSCI_A0->TXBUF = a;					    // Send a character
